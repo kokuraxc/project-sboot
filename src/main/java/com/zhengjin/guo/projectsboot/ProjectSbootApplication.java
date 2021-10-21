@@ -1,6 +1,10 @@
 package com.zhengjin.guo.projectsboot;
 
+import com.zhengjin.guo.projectsboot.data.entity.Guest;
+import com.zhengjin.guo.projectsboot.data.entity.Reservation;
 import com.zhengjin.guo.projectsboot.data.entity.Room;
+import com.zhengjin.guo.projectsboot.data.repository.GuestRepository;
+import com.zhengjin.guo.projectsboot.data.repository.ReservationRepository;
 import com.zhengjin.guo.projectsboot.data.repository.RoomRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,4 +33,27 @@ public class ProjectSbootApplication {
 		}
 	}
 
+	@RestController
+	@RequestMapping("/guests")
+	public class GuestController {
+		@Autowired
+		private GuestRepository guestRepository;
+
+		@GetMapping
+		public Iterable<Guest> getGuests() {
+			return this.guestRepository.findAll();
+		}
+	}
+
+	@RestController
+	@RequestMapping("/reservations")
+	public class ReservationController {
+		@Autowired
+		private ReservationRepository reservationRepository;
+
+		@GetMapping
+		public Iterable<Reservation> getReservations() {
+			return this.reservationRepository.findAll();
+		}
+	}
 }
