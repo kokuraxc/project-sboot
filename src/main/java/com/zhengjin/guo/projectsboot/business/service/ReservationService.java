@@ -32,32 +32,30 @@ public class ReservationService {
     }
 
     public List<RoomReservation> getRoomReservationsForDate(Date date) {
-        Iterable<Room> rooms = this.roomRepository.findAll();
-        Map<Long, RoomReservation> roomReservationMap = new HashMap<>();
-        rooms.forEach(room -> {
-            RoomReservation roomReservation = new RoomReservation();
-            roomReservation.setRoomId(room.getRoomId());
-            roomReservation.setRoomName(room.getRoomName());
-            roomReservation.setRoomNumber(room.getRoomNumber());
-            roomReservationMap.put(room.getRoomId(), roomReservation);
-        });
-
         Iterable<Reservation> reservations = this.reservationRepository
                 .findReservationByDate(new java.sql.Date(date.getTime()));
 
+        List<RoomReservation> roomReservations = new ArrayList<>();
+
         reservations.forEach(reservation -> {
-            RoomReservation roomReservation = roomReservationMap.get(reservation.getRoomId());
+            RoomReservation roomReservation = new RoomReservation();
+
             roomReservation.setDate(new java.sql.Date(date.getTime()));
+
+            // get room
+            Room room = this.roomRepository.findById(reservation.getRoomId()).get();
+            roomReservation.setRoomId(room.getRoomId());
+            roomReservation.setRoomName(room.getRoomName());
+            roomReservation.setRoomNumber(room.getRoomNumber());
+
+            // get guest
             Guest guest = this.guestRepository.findById((reservation.getGuestId())).get();
             roomReservation.setFirstName(guest.getFirstName());
             roomReservation.setLastName(guest.getLastName());
             roomReservation.setGuestId(guest.getGuestId());
-        });
 
-        List<RoomReservation> roomReservations = new ArrayList<>();
-        for (Long id : roomReservationMap.keySet()) {
-            roomReservations.add(roomReservationMap.get(id));
-        }
+            roomReservations.add(roomReservation);
+        });
 
         return roomReservations;
     }
