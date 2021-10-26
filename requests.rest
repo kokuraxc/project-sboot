@@ -7,3 +7,6 @@ GET http://localhost:8080/guests
 ###
 
 GET http://localhost:8080/reservations
+
+###
+GET http://localhost:8080/api/roomreservations?date=2020-01-01
